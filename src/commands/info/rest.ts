@@ -21,7 +21,11 @@ export default new Command ({
         const response = await fetch(api)
 
         if (response.status === 200) { 
-            const pickupLine = await response.json().then((j) => j.line).catch((error) => {interaction.followUp('Sorry, I think my AI Pickup Line brain had a hiccup, please try again in a while')})
+            const pickupLine = await response.json()
+            .then((j) => j.line)
+            .catch((error) => {
+                interaction.followUp('Sorry, I think my AI Pickup Line brain had a hiccup, please try again in a while')
+            })
             //interaction.followUp(pickupLine + interaction.options)))
             const person = interaction.options.getMentionable('user') ?? ""
             interaction.followUp(`${person.toString()} ${pickupLine}`)
@@ -29,4 +33,3 @@ export default new Command ({
         }
     })
 })
-
