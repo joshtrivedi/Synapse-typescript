@@ -29,7 +29,6 @@ export default new Command({
 
         if(interaction.channel.type == "DM") return;
         
-
         const mess = await (interaction.channel as TextChannel)
 
         mess.bulkDelete(numberOfMessagesToDelete, true)
