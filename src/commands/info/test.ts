@@ -20,11 +20,7 @@ export default new Command({
             return interaction.followUp("not a mod")
         }
 
-        const testTitles = ["1", "2", "3", "4", "5", "6", "7"]
-        const testValues = ["one", "two", "three", "four", "five", "six", "seven"]
-
-        const embed = await embedCreate(["Test Embed", "Testing the Embed function"], testTitles, testValues)
-        interaction.followUp({embeds: [embed]})
+        
 
     }
-}) 
+})
