@@ -14,11 +14,14 @@
   "author": "Josh Trivedi",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.26.0",
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
     "glob": "^7.2.0",
     "mongoose": "^6.2.1",
-    "mongosh": "^1.1.9"
+    "mongosh": "^1.1.9",
+    "nodemon": "^2.0.15",
+    "ts-transformer-keys": "^0.4.3"
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",
