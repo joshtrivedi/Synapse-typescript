@@ -1,21 +1,18 @@
 import { Command } from '../../structures/Command'
 import Discord from 'discord.js'
-import { isAuthorModerator } from '../../permissionsHandler'
 import { embedCreate } from '../../structures/EmbedCreate'
 import axios from "axios"
 import { env } from 'process'
-import { stringify } from 'querystring'
 
+const flagEmojis = require('../../utils/flagEmojis')
 const link = "https://avwx.rest/api/station/"
 const token = env.apiToken;
 const example: string[] = [" EGLL", "EHAM", "OMDB", "HAAB", "KLAX"]
 const timezoneApi = "http://api.timezonedb.com/v2.1/get-time-zone?"
 
-function capitalizeEachLetter(string: string[]) {
-    //const words = string.split(" ");
-    
-    
-    return string;
+function getEmojifromCode(args: string) {
+    const matching = flagEmojis.find(element => element.code === args)
+    return matching.emoji
 }
 
 export interface Root {
@@ -45,9 +42,9 @@ export interface Runway {
 }
 
 export interface MyData {
-    Name: string
-    City: string
-    Country: string
+    // Name: string
+    // City: string
+    // Country: string
     Type: string
     Elevation: string
     Iata: string
@@ -71,9 +68,6 @@ export default new Command({
         }
     ],
     run: async ({ client, interaction }) => {
-        if (!isAuthorModerator(interaction.member)) {
-            return interaction.followUp("not a mod")
-        }
 
         try {
             const response = await axios.get(link + interaction.options.getString('id').toUpperCase(), { headers: { 'Authorization': `Bearer ${token}` } })
@@ -85,9 +79,9 @@ export default new Command({
                 if (MappedData) {
 
                     const myData: MyData = {
-                        Name: MappedData.name,
-                        City: MappedData.city,
-                        Country: MappedData.country,
+                        // Name: MappedData.name,
+                        // City: MappedData.city,
+                        // Country: MappedData.country,
                         Type: MappedData.type.split("_").map((word) => {
                             return word[0].toUpperCase() + word.substring(1);
                         }).join(" "),
@@ -102,7 +96,7 @@ export default new Command({
                     }
 
                     const id = interaction.options.getString('id').toUpperCase()
-                    const titleFields = ["Airport Information", ` for ICAO Code ${id}`]
+                    const titleFields = [`${MappedData.city}, ${MappedData.country}    ${getEmojifromCode(MappedData.country)}`, `${MappedData.name}`]
                     const fieldNames = Object.keys(myData)
                     const fieldValues = Object.values(myData)
                     const embed = await embedCreate(titleFields, fieldValues, fieldNames)
