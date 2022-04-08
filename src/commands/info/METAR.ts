@@ -1,12 +1,8 @@
 import { Command } from '../../structures/Command'
 import Discord from 'discord.js'
-import { isAuthorModerator } from '../../permissionsHandler'
 import { embedCreate } from '../../structures/EmbedCreate'
-
 import axios from "axios"
-
 import { env } from 'process'
-import { MessageComponentTypes } from 'discord.js/typings/enums'
 const link = "https://avwx.rest/api/metar/"
 const token = env.apiToken;
 
@@ -241,9 +237,6 @@ export default new Command({
         type: Discord.Constants.ApplicationCommandOptionTypes.STRING,
     }],
     run: async ({ client, interaction }) => {
-        if (!isAuthorModerator(interaction.member)) {
-            return interaction.followUp("not a mod")
-        }
 
         try {
             const response = await axios.get(link + interaction.options.getString('id').toUpperCase() + `?options=info,translate`, { headers: { 'Authorization': `Bearer ${token}` } })
