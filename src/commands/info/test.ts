@@ -19,7 +19,7 @@ export default new Command({
         if (!isAuthorModerator(interaction.member)) {
             return interaction.followUp("not a mod")
         }
-
+        
         
 
     }
