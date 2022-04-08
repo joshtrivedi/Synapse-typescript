@@ -1,6 +1,5 @@
 import { Command } from '../../structures/Command'
 import Discord from 'discord.js'
-import { isAuthorModerator } from '../../permissionsHandler'
 import { embedCreate } from '../../structures/EmbedCreate'
 import axios from "axios"
 import { env } from 'process'
@@ -185,9 +184,6 @@ export default new Command({
         }
     ],
     run: async ({ client, interaction }) => {
-        if (!isAuthorModerator(interaction.member)) {
-            return interaction.followUp("not a mod")
-        }
 
         try {
             const response = await axios.get(link + interaction.options.getString('id').toUpperCase() + `?options=info,translate`, { headers: { 'Authorization': `Bearer ${token}` } })
@@ -195,8 +191,6 @@ export default new Command({
             if (response.status === 200) {
                 const title = await response.data
                 const MappedData: Root = JSON.parse(JSON.stringify(title))
-                //console.log(MappedData)
-                //get time zone from lattitude and longitude
                 const timezone = await axios.get(timezoneApi + `key=${env.timezoneApiKey}&format=json&by=position&lat=${MappedData.info.latitude}&lng=${MappedData.info.longitude}`)
                 
                 if (MappedData) {
