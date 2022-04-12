@@ -3,6 +3,7 @@ import Discord from 'discord.js'
 import { embedCreate } from '../../structures/EmbedCreate'
 import axios from "axios"
 import { env } from 'process'
+import interactionCreate from '../../events/interactionCreate'
 
 const flagEmojis = require('../../utils/flagEmojis')
 const link = "https://avwx.rest/api/station/"
