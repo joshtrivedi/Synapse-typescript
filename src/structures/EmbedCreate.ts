@@ -17,16 +17,15 @@ const colorArray = ['#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6',
     '#FF3380', '#CCCC00', '#66E64D', '#4D80CC', '#9900B3',
     '#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF'];
 
-export const embedCreate = (titleFields: String[], fields: string[], fieldNames: string[]): MessageEmbed => {
-
+export const embedCreate = (titleFields: string[], fields: string[], fieldNames: string[]): MessageEmbed => {
     const embed = new MessageEmbed()
         .setColor(colorArray[getRandomInt(colorArray.length-1)] as `#${string}`)
-        .setTitle(titleFields[0] as `${string}`)
-        .setDescription(titleFields[1] as `${string}`)
-        .setTimestamp()
+        .setTitle(titleFields[0] ?? "BoxBot Embed")
+        .setDescription(titleFields[1] ?? "Here is the data you requested")
 
     for (var i = 0; i < fields.length; i++) {
         embed.addField(fieldNames[i].toString(), fields[i].toString(), true)
     }
     return embed
+    
 } 
