@@ -1,4 +1,5 @@
 import {
+    Channel,
     ChatInputApplicationCommandData,
     CommandInteraction,
     CommandInteractionOptionResolver,
