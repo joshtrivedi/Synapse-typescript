@@ -16,6 +16,7 @@ export default new Command({
         required: true,
         type: Discord.Constants.ApplicationCommandOptionTypes.NUMBER
     }],
+    userPermissions: ["MANAGE_MESSAGES"],
     run: (async ({ client, interaction }) => {
         if (!isAuthorModerator(interaction.member)) {
             interaction.followUp("Author is not a moderator")

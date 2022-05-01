@@ -11,6 +11,12 @@ export default new Command({
     name: "test",
     description: "command to fetch TAF data for an id",
     options: [
+        {
+            name: "id",
+            description: `Put in the ID for Taf`,
+            required: true,
+            type: "USER",
+        },
     ],
     run: async ({ client, interaction }) => {
         if (!isAuthorModerator(interaction.member)) {

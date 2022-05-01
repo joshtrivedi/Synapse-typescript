@@ -10,7 +10,7 @@ export default new Command({
     options: [
         {
             name: "id",
-            description: `Put in the ID for Taf`,
+            description: `User tag to ban`,
             required: true,
             type: "USER",
         },
