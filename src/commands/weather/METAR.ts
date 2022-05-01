@@ -244,7 +244,6 @@ export default new Command({
             if (response.status === 200) {
                 //console.log(response.data)
                 var allData: Root = JSON.parse(JSON.stringify(response.data))
-                console.log(allData)
                 var data: MyData = {
                     type: "METAR",
                     Station: allData.station,
