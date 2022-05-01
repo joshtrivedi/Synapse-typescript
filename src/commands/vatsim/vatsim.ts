@@ -155,101 +155,97 @@ export default new Command({
                         return interaction.followUp("Please enter a valid ICAO code")
                     }
                     airport_name = airportResponse.data.name
+                    handler.getAirportInfo(airport).then(async (data: Root) => {
+                        //fetch airport api
+                        if (data.pilots.length === 0 && data.controllers.length === 0) {
+                            return interaction.followUp("No data found for that ID")
+                        }
+                        //map the data to myVatsimAirport
+                        var MappedData: Root = JSON.parse(JSON.stringify(data))
+                        MappedData.pilots.forEach((element, i) => {
+                            var myvatsimAirport: myVatsimAirport = {
+                                Airport: airport_name ?? `${id}`,
+                                Pilot: element.name ?? "N/A",
+                                Callsign: element.callsign ?? "N/A",
+                                LogOn_Time: element.logon_time ?? "N/A",
+                                ATIS: `${MappedData.controllers[i]?.text_atis.join("\r\n")}` ?? `No Controllers found for ${id}`
+                            }
+                            const titleFields = Object.keys(myvatsimAirport)
+                            const titleValues = Object.values(myvatsimAirport)
+                            const title = [`Vatsim Data for`, `${airport_name}` ?? `${id}`]
+                            const embed = embedCreate(title, titleValues, titleFields)
+                            embeds.push(embed)
+                        });
+                        //create the embed
+                        const pages = {} as { [key: string]: number }
+
+                        const getRow = (id: string) => {
+                            const row = new MessageActionRow()
+                                .addComponents(
+                                    new MessageButton()
+                                        .setCustomId("prev_embed")
+                                        .setStyle('SECONDARY')
+                                        .setEmoji('⬅')
+                                        .setDisabled(pages[id] === 0)
+                                )
+                                .addComponents(
+                                    new MessageButton()
+                                        .setCustomId("next_embed")
+                                        .setStyle('SECONDARY')
+                                        .setEmoji('➡')
+                                        .setDisabled(pages[id] === embeds.length - 1)
+                                )
+                            return row
+                        }
+                        const id = interaction.user.id
+                        pages[id] = pages[id] || 0
+
+                        const embed = embeds[pages[id]]
+
+                        const filter = (btnInt: MessageComponentInteraction) => {
+                            return (btnInt.user.id === interaction.user.id)
+                        }
+
+                        interaction.followUp({
+                            embeds: [embed],
+                            components: [getRow(id)]
+                        })
+
+                        const collector = interaction.channel.createMessageComponentCollector({
+                            filter: filter,
+                            time: 1000 * 60 * 5
+                        })
+
+                        collector.on('collect', async (btnInt: ButtonInteraction) => {
+                            if (!btnInt) { return }
+                            if (btnInt.customId !== 'prev_embed' && btnInt.customId !== 'next_embed') { return }
+
+                            if (btnInt.customId === 'prev_embed' && pages[id] > 0) {
+                                --pages[id]
+                            } else if (btnInt.customId === 'next_embed' && pages[id] < embeds.length - 1) {
+                                ++pages[id]
+                            }
+                            interaction.editReply({
+                                embeds: [embeds[pages[id]]],
+                                components: [getRow(id)]
+
+                            })
+                        })
+
+                        collector.on('end', (collected, reason) => {
+                            if (reason === 'time') {
+                                interaction.editReply({
+                                    embeds: [embeds[pages[id]].setFooter("The interaction has expired")],
+                                })
+                            }
+                        })
+                    })
                 }
                 catch (e) {
                     console.log(e)
                     return interaction.followUp("Please enter a valid ICAO code")
                 }
 
-                handler.getAirportInfo(airport).then(async (data: Root) => {
-                    //fetch airport api
-                    if (data.pilots.length === 0 && data.controllers.length === 0) {
-                        return interaction.followUp("No data found for that ID")
-                    }
-                    //map the data to myVatsimAirport
-                    var MappedData: Root = JSON.parse(JSON.stringify(data))
-                    MappedData.pilots.forEach((element,i) => {
-                        var myVatsimAirport: myVatsimAirport = {
-                            Airport: airport_name ?? `${id}`,
-                            Pilot: element.name ?? "N/A",
-                            Callsign: element.callsign ?? "N/A",
-                            LogOn_Time: element.logon_time ?? "N/A",
-                            ATIS: `${MappedData.controllers[i]?.text_atis.join("\r\n")}`?? `No Controllers found for ${id}`
-                        }
-                        console.log(myVatsimAirport)
-                    });
-                    //create the embed
-                    //
-                   
-                    // const titleFields = Object.keys(myVatsimAirport)
-                    // const titleValues = Object.values(myVatsimAirport)
-                    // const embed = embedCreate([ `${airport_name}`??`AIRPORT: ${id}`,  "VATMSIM data:" ], titleValues, titleFields)
-                    // embeds.push(embed)
-                })
-                // const pages = {} as { [key: string]: number }
-
-                // const getRow = (id: string) => {
-                //     const row = new MessageActionRow()
-                //         .addComponents(
-                //             new MessageButton()
-                //                 .setCustomId("prev_embed")
-                //                 .setStyle('SECONDARY')
-                //                 .setEmoji('⬅')
-                //                 .setDisabled(pages[id] === 0)
-                //         )
-                //         .addComponents(
-                //             new MessageButton()
-                //                 .setCustomId("next_embed")
-                //                 .setStyle('SECONDARY')
-                //                 .setEmoji('➡')
-                //                 .setDisabled(pages[id] === embeds.length - 1)
-                //         )
-                //     return row
-                // }
-                // const id = interaction.user.id
-                // pages[id] = pages[id] || 0
-
-                // const embed = embeds[pages[id]]
-
-                // const filter = (btnInt: MessageComponentInteraction) => {
-                //     return (btnInt.user.id === interaction.user.id)
-                // }
-
-                // interaction.followUp({
-                //     embeds: [embed],
-                //     components: [getRow(id)]
-                // })
-
-                // const collector = interaction.channel.createMessageComponentCollector({
-                //     filter: filter,
-                //     time: 1000 * 60 * 5
-                // })
-
-                // collector.on('collect', async (btnInt: ButtonInteraction) => {
-                //     if (!btnInt) { return }
-                //     if (btnInt.customId !== 'prev_embed' && btnInt.customId !== 'next_embed') { return }
-
-                //     if (btnInt.customId === 'prev_embed' && pages[id] > 0) {
-                //         --pages[id]
-                //     } else if (btnInt.customId === 'next_embed' && pages[id] < embeds.length - 1) {
-                //         ++pages[id]
-                //     }
-                //     interaction.editReply({
-                //         embeds: [embeds[pages[id]]],
-                //         components: [getRow(id)]
-                        
-                //     })
-                // })
-
-                // collector.on('end', (collected, reason) => {
-                //     if (reason === 'time') {
-                //         interaction.editReply({
-                //             embeds: [embeds[pages[id]].setFooter("The interaction has expired")],
-                //         })
-                //     }
-                // })
-
-                
                 break;
             }
             case "flight": {
@@ -259,20 +255,19 @@ export default new Command({
                     if (data === undefined) {
                         return interaction.followUp("No data found for that Callsign")
                     }
-                    console.log(data)
                     //map data to myVatsimFlight
                     var myVatsimFlight: myVatsimFlight = {
-                        Callsign: data.callsign,
-                        Aircraft: data.flight_plan.aircraft,
-                        Flight_rules: data.flight_plan.flight_rules,
-                        Pilot_name: data.name,
-                        CID: data.cid,
-                        Departure: data.flight_plan.departure,
-                        Arrival: data.flight_plan.arrival,
-                        Alternate: data.flight_plan.alternate,
-                        Route: data.flight_plan.route,
-                        LogOn_Time: data.logon_time,
-                        Remarks: data.flight_plan.remarks
+                        Callsign: data.callsign ?? "Callsign not found",
+                        Aircraft: data.flight_plan.aircraft ?? "Aircraft not found",
+                        Flight_rules: data.flight_plan.flight_rules ?? "Flight rules not found",
+                        Pilot_name: data.name ?? "Pilot not found",
+                        CID: data.cid ?? 0,
+                        Departure: data.flight_plan.departure ?? "Departure not found",
+                        Arrival: data.flight_plan.arrival ?? "Arrival not found",
+                        Alternate: data.flight_plan.alternate ?? "Alternate not found",
+                        Route: data.flight_plan.route ?? "Route not found",
+                        LogOn_Time: data.logon_time ?? "Logon time not found",
+                        Remarks: data.flight_plan.remarks ?? "Remarks not found",
                     }
                     var titleFields = Object.keys(myVatsimFlight)
                     var titleValues = Object.values(myVatsimFlight)
@@ -284,7 +279,7 @@ export default new Command({
                 break;
             }
             default:
-                interaction.followUp("Invalid type, please use Airport or Flight")
+                interaction.followUp("Invalid type, please use `/vatsim Airport or Flight followed by the ICAO or Callsign`")
                 break;
         }
 
