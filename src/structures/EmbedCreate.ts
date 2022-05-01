@@ -24,7 +24,9 @@ export const embedCreate = (titleFields: string[], fields: string[], fieldNames:
         .setDescription(titleFields[1] ?? "Here is the data you requested")
 
     for (var i = 0; i < fields.length; i++) {
-        embed.addField(fieldNames[i].toString(), fields[i].toString(), true)
+        //only allow 1024 characters per field
+        embed.addField(fieldNames[i].toString(), fields[i].toString().length > 1024 ? fields[i].toString().substring(0, 1021)+"..." : fields[i].toString(), true) 
+        //embed.addField(fieldNames[i]?.toString() ?? 'No Data', fields[i]?.toString() ?? 'No Data', true)
     }
     return embed
     

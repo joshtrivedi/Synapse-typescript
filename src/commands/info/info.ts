@@ -59,7 +59,7 @@ export interface MyData {
 
 export default new Command({
     name: "info",
-    description: "command to fetch TAF data for an id",
+    description: "command to fetch Airport information",
     options: [
         {
             name: "id",
@@ -74,7 +74,6 @@ export default new Command({
             const response = await axios.get(link + interaction.options.getString('id').toUpperCase(), { headers: { 'Authorization': `Bearer ${token}` } })
 
             if (response.status === 200) {
-                console.log(response.data)
                 var MappedData: Root = JSON.parse(JSON.stringify(response.data))
 
                 if (MappedData) {
