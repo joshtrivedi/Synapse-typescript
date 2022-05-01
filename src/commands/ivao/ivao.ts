@@ -72,7 +72,7 @@
 //                 })
 //             }
 //         })
-
+ 
 //         collector.on('end', async (collection) => {
 //             await interaction.editReply({
 //                 content: "yeah the embed has expired",
