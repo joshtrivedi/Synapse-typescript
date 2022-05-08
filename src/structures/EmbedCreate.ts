@@ -2,9 +2,15 @@ const Discord = require('discord.js');
 
 import { Client, GuildMember, Message, MessageEmbed, PartialGuildMember, TextChannel } from 'discord.js'
 
+//function that takes a string, splits from _ and capitalises first letter of every element 
+function captilize(str: string){
+    return str.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+}
+
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
+
 
 const colorArray = ['#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6',
     '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D',
@@ -25,7 +31,8 @@ export const embedCreate = (titleFields: string[], fields: string[], fieldNames:
 
     for (var i = 0; i < fields.length; i++) {
         //only allow 1024 characters per field
-        embed.addField(fieldNames[i].toString(), fields[i].toString().length > 1024 ? fields[i].toString().substring(0, 1021)+"..." : fields[i].toString(), true) 
+        var embedf = fieldNames[i].split("_").length > 1 ? captilize(fieldNames[i]) : fieldNames[i];
+        embed.addField(embedf, fields[i].toString().length > 1024 ? fields[i].toString().substring(0, 1021)+"..." : fields[i].toString(), true) 
         //embed.addField(fieldNames[i]?.toString() ?? 'No Data', fields[i]?.toString() ?? 'No Data', true)
     }
     return embed

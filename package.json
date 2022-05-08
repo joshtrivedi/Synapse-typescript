@@ -7,6 +7,7 @@
     "start": "ts-node src/index.ts",
     "start:dev": "ts-node-dev src/index.ts",
     "start:prod": "node dist/index.js",
+    "dev": "nodemon --watch src --exec \"npm run start:dev\"",
     "build": "tsc",
     "watch": "tsc -w"
   },
@@ -21,7 +22,7 @@
     "glob": "^7.2.0",
     "mongoose": "^6.2.1",
     "mongosh": "^1.1.9",
-    "nodemon": "^2.0.15",
+    "nodemon": "^2.0.16",
     "string-progressbar": "^1.0.4",
     "ts-transformer-keys": "^0.4.3",
     "vatsim-data-handler": "^6.1.3"

@@ -126,162 +126,112 @@ export default new Command({
     description: "command to fetch latest activity for airport",
     options: [
         {
-            name: "authenticator",
-            description: `whether you want to fetch by airport or flight callsign`,
-            required: true,
-            type: Discord.Constants.ApplicationCommandOptionTypes.STRING,
-        },
-        {
             name: "id",
-            description: `the id of the airport or flight`,
+            description: `Airport ICAO`,
             required: true,
             type: Discord.Constants.ApplicationCommandOptionTypes.STRING,
         }
     ],
     run: async ({ client, interaction }) => {
-        var id = interaction.options.getString("id")
-        var type = interaction.options.getString("authenticator").toLowerCase()
-
-        switch (type) {
-
-            case "airport": {
-                const embeds: MessageEmbed[] = []
-                const title: string[] = []
-                const airport = interaction.options.getString('id').toUpperCase()
-                var airport_name: string
-                try {
-                    const airportResponse = await axios.get(airportUrl + airport, { headers: { 'Authorization': `Bearer ${token}` } })
-                    if (airportResponse.status > 399) {
-                        return interaction.followUp("Please enter a valid ICAO code")
-                    }
-                    airport_name = airportResponse.data.name
-                    handler.getAirportInfo(airport).then(async (data: Root) => {
-                        //fetch airport api
-                        if (data.pilots.length === 0 && data.controllers.length === 0) {
-                            return interaction.followUp("No data found for that ID")
-                        }
-                        //map the data to myVatsimAirport
-                        var MappedData: Root = JSON.parse(JSON.stringify(data))
-                        MappedData.pilots.forEach((element, i) => {
-                            var myvatsimAirport: myVatsimAirport = {
-                                Airport: airport_name ?? `${id}`,
-                                Pilot: element.name ?? "N/A",
-                                Callsign: element.callsign ?? "N/A",
-                                LogOn_Time: element.logon_time ?? "N/A",
-                                ATIS: `${MappedData.controllers[i]?.text_atis.join("\r\n")}` ?? `No Controllers found for ${id}`
-                            }
-                            const titleFields = Object.keys(myvatsimAirport)
-                            const titleValues = Object.values(myvatsimAirport)
-                            const title = [`Vatsim Data for`, `${airport_name}` ?? `${id}`]
-                            const embed = embedCreate(title, titleValues, titleFields)
-                            embeds.push(embed)
-                        });
-                        //create the embed
-                        const pages = {} as { [key: string]: number }
-
-                        const getRow = (id: string) => {
-                            const row = new MessageActionRow()
-                                .addComponents(
-                                    new MessageButton()
-                                        .setCustomId("prev_embed")
-                                        .setStyle('SECONDARY')
-                                        .setEmoji('⬅')
-                                        .setDisabled(pages[id] === 0)
-                                )
-                                .addComponents(
-                                    new MessageButton()
-                                        .setCustomId("next_embed")
-                                        .setStyle('SECONDARY')
-                                        .setEmoji('➡')
-                                        .setDisabled(pages[id] === embeds.length - 1)
-                                )
-                            return row
-                        }
-                        const id = interaction.user.id
-                        pages[id] = pages[id] || 0
-
-                        const embed = embeds[pages[id]]
-
-                        const filter = (btnInt: MessageComponentInteraction) => {
-                            return (btnInt.user.id === interaction.user.id)
-                        }
-
-                        interaction.followUp({
-                            embeds: [embed],
-                            components: [getRow(id)]
-                        })
-
-                        const collector = interaction.channel.createMessageComponentCollector({
-                            filter: filter,
-                            time: 1000 * 60 * 5
-                        })
-
-                        collector.on('collect', async (btnInt: ButtonInteraction) => {
-                            if (!btnInt) { return }
-                            if (btnInt.customId !== 'prev_embed' && btnInt.customId !== 'next_embed') { return }
-
-                            if (btnInt.customId === 'prev_embed' && pages[id] > 0) {
-                                --pages[id]
-                            } else if (btnInt.customId === 'next_embed' && pages[id] < embeds.length - 1) {
-                                ++pages[id]
-                            }
-                            interaction.editReply({
-                                embeds: [embeds[pages[id]]],
-                                components: [getRow(id)]
-
-                            })
-                        })
-
-                        collector.on('end', (collected, reason) => {
-                            if (reason === 'time') {
-                                interaction.editReply({
-                                    embeds: [embeds[pages[id]].setFooter("The interaction has expired")],
-                                })
-                            }
-                        })
-                    })
-                }
-                catch (e) {
-                    console.log(e)
-                    return interaction.followUp("Please enter a valid ICAO code")
-                }
-
-                break;
+        const embeds: MessageEmbed[] = []
+        const title: string[] = []
+        const airport = interaction.options.getString('id').toUpperCase()
+        var airport_name: string
+        try {
+            const airportResponse = await axios.get(airportUrl + airport, { headers: { 'Authorization': `Bearer ${token}` } })
+            if (airportResponse.status > 399) {
+               return interaction.followUp("Please enter a valid ICAO code")
             }
-            case "flight": {
-                const embeds: MessageEmbed[] = []
-                const flight = interaction.options.getString('id').toUpperCase()
-                handler.getFlightInfo(flight).then((data: Pilot1) => {
-                    if (data === undefined) {
-                        return interaction.followUp("No data found for that Callsign")
+            airport_name = airportResponse.data.name
+            handler.getAirportInfo(airport).then(async (data: Root) => {
+                //fetch airport api
+                if (data.pilots.length === 0 && data.controllers.length === 0) {
+                    return interaction.followUp("No data found for that ID")
+                }
+                //map the data to myVatsimAirport
+                var MappedData: Root = JSON.parse(JSON.stringify(data))
+                MappedData.pilots.forEach((element, i) => {
+                    var myvatsimAirport: myVatsimAirport = {
+                        Airport: airport_name ?? `${id}`,
+                        Pilot: element.name ?? "N/A",
+                        Callsign: element.callsign ?? "N/A",
+                        LogOn_Time: element.logon_time ?? "N/A",
+                        ATIS: `${MappedData.controllers[i]?.text_atis.join("\r\n")}` ?? `No Controllers found for ${id}`
                     }
-                    //map data to myVatsimFlight
-                    var myVatsimFlight: myVatsimFlight = {
-                        Callsign: data.callsign ?? "Callsign not found",
-                        Aircraft: data.flight_plan.aircraft ?? "Aircraft not found",
-                        Flight_rules: data.flight_plan.flight_rules ?? "Flight rules not found",
-                        Pilot_name: data.name ?? "Pilot not found",
-                        CID: data.cid ?? 0,
-                        Departure: data.flight_plan.departure ?? "Departure not found",
-                        Arrival: data.flight_plan.arrival ?? "Arrival not found",
-                        Alternate: data.flight_plan.alternate ?? "Alternate not found",
-                        Route: data.flight_plan.route ?? "Route not found",
-                        LogOn_Time: data.logon_time ?? "Logon time not found",
-                        Remarks: data.flight_plan.remarks ?? "Remarks not found",
-                    }
-                    var titleFields = Object.keys(myVatsimFlight)
-                    var titleValues = Object.values(myVatsimFlight)
-                    var title = [`Vatsim Data For :`, `Flight ${flight}`]
-                    var embed = embedCreate(title, titleValues, titleFields)
+                    const titleFields = Object.keys(myvatsimAirport)
+                    const titleValues = Object.values(myvatsimAirport)
+                    const title = [`Vatsim Data for`, `${airport_name}` ?? `${id}`]
+                    const embed = embedCreate(title, titleValues, titleFields)
                     embeds.push(embed)
-                    interaction.followUp({ embeds: [embed] })
-                })
-                break;
-            }
-            default:
-                interaction.followUp("Invalid type, please use `/vatsim Airport or Flight followed by the ICAO or Callsign`")
-                break;
-        }
+                });
+                //create the embed
+                const pages = {} as { [key: string]: number }
 
+                const getRow = (id: string) => {
+                    const row = new MessageActionRow()
+                        .addComponents(
+                            new MessageButton()
+                                .setCustomId("prev_embed")
+                                .setStyle('SECONDARY')
+                                .setEmoji('⬅')
+                                .setDisabled(pages[id] === 0)
+                        )
+                        .addComponents(
+                            new MessageButton()
+                                .setCustomId("next_embed")
+                                .setStyle('SECONDARY')
+                                .setEmoji('➡')
+                                .setDisabled(pages[id] === embeds.length - 1)
+                        )
+                    return row
+                }
+                const id = interaction.user.id
+                pages[id] = pages[id] || 0
+
+                const embed = embeds[pages[id]]
+
+                const filter = (btnInt: MessageComponentInteraction) => {
+                    return (btnInt.user.id === interaction.user.id)
+                }
+
+                interaction.followUp({
+                    embeds: [embed],
+                    components: [getRow(id)]
+                })
+
+                const collector = interaction.channel.createMessageComponentCollector({
+                    filter: filter,
+                    time: 1000 * 60 * 5
+                })
+
+                collector.on('collect', async (btnInt: ButtonInteraction) => {
+                    if (!btnInt) { return }
+                    if (btnInt.customId !== 'prev_embed' && btnInt.customId !== 'next_embed') { return }
+
+                    if (btnInt.customId === 'prev_embed' && pages[id] > 0) {
+                        --pages[id]
+                    } else if (btnInt.customId === 'next_embed' && pages[id] < embeds.length - 1) {
+                        ++pages[id]
+                    }
+                    interaction.editReply({
+                        embeds: [embeds[pages[id]]],
+                        components: [getRow(id)]
+
+                    })
+                })
+
+                collector.on('end', (collected, reason) => {
+                    if (reason === 'time') {
+                        interaction.editReply({
+                            embeds: [embeds[pages[id]].setFooter("The interaction has expired")],
+                        })
+                    }
+                })
+            })
+        }
+        catch (e) {
+            console.log(e)
+            return interaction.followUp("Please enter a valid ICAO code")
+        }
     }
 })

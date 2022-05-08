@@ -48,8 +48,8 @@ export interface MyData {
     // Country: string
     Type: string
     Elevation: string
-    Iata: string
-    Icao: string
+    IATA: string
+    ICAO: string
     Latitude: number
     Longitude: number
     Runways: number
@@ -86,8 +86,8 @@ export default new Command({
                             return word[0].toUpperCase() + word.substring(1);
                         }).join(" "),
                         Elevation: MappedData.elevation_ft + " ft" + " / " + MappedData.elevation_m + " m",
-                        Iata: MappedData.iata,
-                        Icao: MappedData.icao,
+                        IATA: MappedData.iata,
+                        ICAO: MappedData.icao,
                         Latitude: MappedData.latitude,
                         Longitude: MappedData.longitude,
                         Runways: MappedData.runways.length,

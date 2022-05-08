@@ -200,14 +200,14 @@ export default new Command({
                         Time: timezone.status === 200 ? [MappedData.time.repr.slice(2, 4), ":", MappedData.time.repr.slice(4, 6)].join("") + " "+timezone.data.abbreviation : " Local Time",
                         Date: MappedData.time.dt.split("T")[0],
                         Wind_direction: MappedData.forecast[0] ? MappedData.forecast[0].wind_direction.repr : "No Forecast",
-                        Wind_speed: MappedData.forecast[0] ? MappedData.forecast[0].wind_speed.repr + " " + MappedData.units.wind_speed.toUpperCase() : "No Forecast",
-                        Visibility: MappedData.forecast[0] ? MappedData.forecast[0].visibility.repr + " " + MappedData.units.visibility.toUpperCase() : "No Forecast",
+                        Wind_speed: MappedData.forecast[0] ? MappedData.forecast[0].wind_speed.repr + " " + MappedData.units.wind_speed : "No Forecast",
+                        Visibility: MappedData.forecast[0] ? MappedData.forecast[0].visibility.repr + " " + MappedData.units.visibility : "No Forecast",
                         Cloud_type: MappedData.forecast[0].clouds[0]?.type.toUpperCase() ?? "No Cloud Forecast ",
                         Cloud_altitude: MappedData.forecast[0].clouds[0] ? MappedData.forecast[0].clouds[0]?.altitude + " " + MappedData.units.altitude : "No Cloud Forecast",
                         Raw: MappedData.raw
                     }
                     const id = interaction.options.getString('id').toUpperCase();
-                    const titleFields = [`${interaction.command.name.toUpperCase()} Data`, `for ICAO Code ${id}`]
+                    const titleFields = [`${interaction.command.name.toUpperCase()}`, `for ICAO Code ${id}`]
                     const fieldNames = Object.keys(myData)
                     const fields = Object.values(myData)
                     const embed = await embedCreate(titleFields, fields, fieldNames)
@@ -215,6 +215,9 @@ export default new Command({
                     return
 
                 }
+            }
+            else if (response.status > 299) {
+                interaction.followUp("Please make sure you entered the right ICAO code for example: `EHAM / eham`")
             }
         } catch(e) {
             console.log(e)
