@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines":{
+    "node": "17.3.0"
+  },
   "scripts": {
     "start": "ts-node src/index.ts",
     "start:dev": "ts-node-dev src/index.ts",
