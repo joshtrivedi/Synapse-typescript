@@ -2,13 +2,15 @@ import {
     ApplicationCommandDataResolvable,
     Client,
     ClientEvents,
-    Collection
+    Collection,
+    Guild
 } from "discord.js";
 import { CommandType } from "../typings/Command";
 import glob from "glob";
 import { promisify } from "util";
 import { RegisterCommandsOptions } from "../typings/client";
 import { Event } from "./Event";
+import guildCreate from "../events/guildCreate";
 
 const globPromise = promisify(glob);
 
@@ -56,6 +58,15 @@ export class ExtendedClient extends Client {
             this.registerCommands({
                 commands: slashCommands,
                 guildId: process.env.guildId
+            });               
+        });
+
+        this.on("guildCreate", (guild: Guild) =>{
+            const {id} = guild
+            if (process.env.guildId === id) return ;
+            this.registerCommands({
+                commands: slashCommands,
+                guildId: id
             });
         });
 
