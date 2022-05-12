@@ -22,7 +22,7 @@ export default new Command({
             interaction.followUp("Author is not a moderator")
             return
         }
-        const numberOfMessagesToDelete = await interaction.options.getNumber('args')
+        const numberOfMessagesToDelete = await interaction.options.getNumber('messages')
         if(!(numberOfMessagesToDelete > 1)){
             interaction.followUp("Delete that one message manually.")
             return
