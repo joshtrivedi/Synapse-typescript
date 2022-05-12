@@ -91,8 +91,8 @@ export default new Command({
                         Latitude: MappedData.latitude,
                         Longitude: MappedData.longitude,
                         Runways: MappedData.runways.length,
-                        Website: `[here](${MappedData.website})`,
-                        Wiki: `[here](${MappedData.wiki})`
+                        Website: MappedData.website ? `[here](${MappedData.website})` : "N/A",
+                        Wiki: MappedData.wiki ? `[here](${MappedData.wiki})` : "N/A",
                     }
 
                     const id = interaction.options.getString('id').toUpperCase()

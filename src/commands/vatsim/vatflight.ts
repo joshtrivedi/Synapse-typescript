@@ -101,10 +101,10 @@ export interface FlightPlan {
 
 export interface myVatsimFlight {
     Callsign: string
-    Aircraft: string
-    Flight_rules: string
     Pilot_name: string
     CID: number
+    Flight_rules: string
+    Aircraft: string
     Departure: string
     Arrival: string
     Alternate: string
@@ -141,10 +141,10 @@ export default new Command({
             //map data to myVatsimFlight
             var myVatsimFlight: myVatsimFlight = {
                 Callsign: data.callsign ?? "Callsign not found",
-                Aircraft: data.flight_plan.aircraft ?? "Aircraft not found",
-                Flight_rules: data.flight_plan.flight_rules ?? "Flight rules not found",
                 Pilot_name: data.name ?? "Pilot not found",
                 CID: data.cid ?? 0,
+                Flight_rules: data.flight_plan.flight_rules+"FR" ?? "Flight rules not found",
+                Aircraft: data.flight_plan.aircraft.split('/')[0] ?? "Aircraft not found",
                 Departure: data.flight_plan.departure ?? "Departure not found",
                 Arrival: data.flight_plan.arrival ?? "Arrival not found",
                 Alternate: data.flight_plan.alternate ?? "Alternate not found",

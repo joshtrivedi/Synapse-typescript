@@ -11,7 +11,7 @@ export default new Command({
     name: "purge",
     description: "deletes number of messages from chat",
     options: [{
-        name: "args",
+        name: "messages",
         description: "number of messages to delete",
         required: true,
         type: Discord.Constants.ApplicationCommandOptionTypes.NUMBER

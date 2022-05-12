@@ -191,13 +191,12 @@ export default new Command({
             if (response.status === 200) {
                 const title = await response.data
                 const MappedData: Root = JSON.parse(JSON.stringify(title))
-                const timezone = await axios.get(timezoneApi + `key=${env.timezoneApiKey}&format=json&by=position&lat=${MappedData.info.latitude}&lng=${MappedData.info.longitude}`)
                 
                 if (MappedData) {
                     const myData: MyData = {
                         Station: MappedData.station,
                         Name: MappedData.info.name,
-                        Time: timezone.status === 200 ? [MappedData.time.repr.slice(2, 4), ":", MappedData.time.repr.slice(4, 6)].join("") + " "+timezone.data.abbreviation : " Local Time",
+                        Time: [MappedData.time.repr.slice(2, 4), ":", MappedData.time.repr.slice(4, 6)].join("") + " UTC",
                         Date: MappedData.time.dt.split("T")[0],
                         Wind_direction: MappedData.forecast[0] ? MappedData.forecast[0].wind_direction.repr : "No Forecast",
                         Wind_speed: MappedData.forecast[0] ? MappedData.forecast[0].wind_speed.repr + " " + MappedData.units.wind_speed : "No Forecast",

@@ -11,6 +11,6 @@ export default new Command({
     run: async ({ client, interaction }) => {
         const now = new Date()
         const zulu = now.toUTCString()
-        interaction.followUp(zulu)
+        interaction.followUp(zulu.replace(/GMT/g, "UTC"))
     }
 })

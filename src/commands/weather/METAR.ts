@@ -211,7 +211,7 @@ export interface Runway {
     bearing2: number
 }
 export interface MyData {
-    type: string
+    Type: string
     Station: string
     Name: string
     Date: string
@@ -245,11 +245,11 @@ export default new Command({
                 //console.log(response.data)
                 var allData: Root = JSON.parse(JSON.stringify(response.data))
                 var data: MyData = {
-                    type: "METAR",
+                    Type: "METAR",
                     Station: allData.station,
                     Name: allData.info.name,
                     Date: allData.time.dt.split("T")[0],
-                    Time: [allData.time.repr.slice(2, 4), ":", allData.time.repr.slice(4, 6)].join(""),
+                    Time: [allData.time.repr.slice(2, 4), ":", allData.time.repr.slice(4, 6)].join("") + " UTC",
                     Wind: allData.translate.wind,
                     Visibility: allData.translate.visibility,
                     Weather: allData.wx_codes[0] ? allData.wx_codes[0]?.value : "All Clear",
@@ -268,7 +268,7 @@ export default new Command({
                 return
             }
         } catch (e) {
-            return interaction.followUp("no data")
+            return interaction.followUp("Please enter a valid ICAO")
         }
 
     }
