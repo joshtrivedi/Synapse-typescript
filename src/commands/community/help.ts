@@ -9,7 +9,7 @@ export default new Command({
             .setTitle("Available commands")
             .setDescription(
                 client.commands
-                    .map(command => `\`${command.name}\``)
+                    .map(command => ` **${command.name}** : \`${command.description}\``)
                     .join("\n") 
             )
             .setColor("#0099ff")
