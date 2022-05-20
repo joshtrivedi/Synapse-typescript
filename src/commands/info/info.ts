@@ -59,10 +59,10 @@ export interface MyData {
 
 export default new Command({
     name: "info",
-    description: "command to fetch Airport information",
+    description: "Fetch a specific Airport info",
     options: [
         {
-            name: "id",
+            name: "icao",
             description: `Put in the ID for Taf`,
             required: true,
             type: Discord.Constants.ApplicationCommandOptionTypes.STRING,
@@ -71,7 +71,7 @@ export default new Command({
     run: async ({ client, interaction }) => {
 
         try {
-            const response = await axios.get(link + interaction.options.getString('id').toUpperCase(), { headers: { 'Authorization': `Bearer ${token}` } })
+            const response = await axios.get(link + interaction.options.getString('icao').toUpperCase(), { headers: { 'Authorization': `Bearer ${token}` } })
 
             if (response.status === 200) {
                 var MappedData: Root = JSON.parse(JSON.stringify(response.data))
@@ -95,7 +95,7 @@ export default new Command({
                         Wiki: MappedData.wiki ? `[here](${MappedData.wiki})` : "N/A",
                     }
 
-                    const id = interaction.options.getString('id').toUpperCase()
+                    const id = interaction.options.getString('icao').toUpperCase()
                     const titleFields = [`${MappedData.city}, ${MappedData.country}    ${getEmojifromCode(MappedData.country)}`, `${MappedData.name}`]
                     const fieldNames = Object.keys(myData)
                     const fieldValues = Object.values(myData)
@@ -105,7 +105,7 @@ export default new Command({
             }
         } catch (e) {
             console.log(e)
-            interaction.followUp("Please make sure you entered the right ID for eg: `EHAM / eham`")
+            interaction.followUp("Please make sure you entered the right ICAO for eg: `EHAM / eham`")
         }
     }
 })

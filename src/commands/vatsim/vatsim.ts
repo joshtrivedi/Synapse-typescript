@@ -126,7 +126,7 @@ export default new Command({
     description: "command to fetch latest activity for airport",
     options: [
         {
-            name: "id",
+            name: "icao",
             description: `Airport ICAO`,
             required: true,
             type: Discord.Constants.ApplicationCommandOptionTypes.STRING,
@@ -135,7 +135,7 @@ export default new Command({
     run: async ({ client, interaction }) => {
         const embeds: MessageEmbed[] = []
         const title: string[] = []
-        const airport = interaction.options.getString('id').toUpperCase()
+        const airport = interaction.options.getString('icao').toUpperCase()
         var airport_name: string
         try {
             const airportResponse = await axios.get(airportUrl + airport, { headers: { 'Authorization': `Bearer ${token}` } })
@@ -152,11 +152,11 @@ export default new Command({
                 var MappedData: Root = JSON.parse(JSON.stringify(data))
                 MappedData.pilots.forEach((element, i) => {
                     var myvatsimAirport: myVatsimAirport = {
-                        Airport: airport_name ?? `${id}`,
+                        Airport: airport_name ?? `${airport}`,
                         Pilot: element.name ?? "N/A",
                         Callsign: element.callsign ?? "N/A",
                         LogOn_Time: element.logon_time ?? "N/A",
-                        ATIS: `${MappedData.controllers[i]?.text_atis.join("\r\n")}` ?? `No Controllers found for ${id}`
+                        ATIS: `${MappedData.controllers[i]?.text_atis.join("\r\n")}` ?? `No Controllers found for ${airport}`
                     }
                     const titleFields = Object.keys(myvatsimAirport)
                     const titleValues = Object.values(myvatsimAirport)

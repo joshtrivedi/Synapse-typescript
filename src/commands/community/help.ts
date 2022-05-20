@@ -3,7 +3,7 @@ import { Command } from "../../structures/Command";
 
 export default new Command({
     name: "help",
-    description: "Shows a list of available commands.",
+    description: "Shows all available commands.",
     run: async ({ client, interaction }) => {
         const embed = new MessageEmbed()
             .setTitle("Available commands")
@@ -13,8 +13,6 @@ export default new Command({
                     .join("\n") 
             )
             .setColor("#0099ff")
-            .setTimestamp()
-            .setFooter(client.user.username, client.user.displayAvatarURL());
-        interaction.reply({embeds: [embed]});
+        interaction.followUp({embeds: [embed]});
     }
 })

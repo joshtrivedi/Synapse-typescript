@@ -8,7 +8,7 @@ export default new Command({
     description: "Post a screenshot and add reactions to it",
     options: [{
         name: "time",
-        description: "time limit for the screenshots / giveaway (in hours)",
+        description: "The time for the screenshots competition is in hours.",
         required: true,
         type: Discord.Constants.ApplicationCommandOptionTypes.NUMBER,
     },

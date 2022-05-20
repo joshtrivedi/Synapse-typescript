@@ -43,10 +43,10 @@ interface Mdata {
 
 export default new Command({
     name: "charts",
-    description: "returns a chart of the airport",
+    description: "Display specific Airport open source charts",
     options: [
         {
-            name: "airport",
+            name: "icao",
             description: "airport to get chart for",
             required: true,
             type: Discord.Constants.ApplicationCommandOptionTypes.STRING,
@@ -54,7 +54,7 @@ export default new Command({
     ],
     run: async ({ client, interaction }) => {
         const embeds: MessageEmbed[] = []
-        var icao = interaction.options.getString("airport").toUpperCase()
+        var icao = interaction.options.getString("icao").toUpperCase()
         const url = `https://api.aviationapi.com/v1/charts?apt=${icao}`
 
         //fetch data as json header
@@ -65,7 +65,7 @@ export default new Command({
                 var MappedData: Root = JSON.parse(JSON.stringify(data))
                 var DynamicMappedData = MappedData[`${icao}`]
                 if (DynamicMappedData.length === 0) {
-                    interaction.followUp(`No chart for ${interaction.options.getString('airport').toUpperCase()}`)
+                    interaction.followUp(`No chart for ${interaction.options.getString('icao').toUpperCase()}`)
                     return
                 }
 
@@ -85,7 +85,7 @@ export default new Command({
                     }
                     var fieldNames = Object.keys(mydata)
                     var fieldValues = Object.values(mydata)
-                    var embed = embedCreate([`CHARTS`, `Charts for ${interaction.options.getString('airport').toUpperCase()} means`], fieldValues, fieldNames)
+                    var embed = embedCreate([`CHARTS`, `Charts for ${interaction.options.getString('icao').toUpperCase()} means`], fieldValues, fieldNames)
 
                     embeds.push(embed)
                 })
@@ -154,7 +154,7 @@ export default new Command({
                 })
             }
         } catch (error) {
-            interaction.channel.send(`No charts found for ${interaction.options.getString('airport').toUpperCase()}`)
+            interaction.channel.send(`No charts found for ${interaction.options.getString('icao').toUpperCase()}`)
         }
     }
 })

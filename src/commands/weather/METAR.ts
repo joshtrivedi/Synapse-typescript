@@ -229,9 +229,9 @@ export interface MyData {
 
 export default new Command({
     name: "metar",
-    description: "fetch metar data",
+    description: "Fetch a specific Airport METAR data.",
     options: [{
-        name: "id",
+        name: "icao",
         description: "airport ICAO code",
         required: true,
         type: Discord.Constants.ApplicationCommandOptionTypes.STRING,
@@ -239,7 +239,7 @@ export default new Command({
     run: async ({ client, interaction }) => {
 
         try {
-            const response = await axios.get(link + interaction.options.getString('id').toUpperCase() + `?options=info,translate`, { headers: { 'Authorization': `Bearer ${token}` } })
+            const response = await axios.get(link + interaction.options.getString('icao').toUpperCase() + `?options=info,translate`, { headers: { 'Authorization': `Bearer ${token}` } })
 
             if (response.status === 200) {
                 //console.log(response.data)
@@ -259,8 +259,8 @@ export default new Command({
                     Altimeter: allData.translate.altimeter,
                     Raw: allData.raw
                 }
-                const id = interaction.options.getString('id').toUpperCase();
-                const titleFields = [`${interaction.command.name.toUpperCase()} Data`, `for ICAO Code ${id}`]
+                const id = interaction.options.getString('icao').toUpperCase();
+                const titleFields = [`${interaction.command.name.toUpperCase()} Data`, `for icao Code ${id}`]
                 const fieldNames = Object.keys(data)
                 const fields = Object.values(data)
                 const embed = await embedCreate(titleFields, fields, fieldNames)

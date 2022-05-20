@@ -3,7 +3,7 @@ import Discord, { Interaction } from "discord.js";
 
 export default new Command({
     name: "flip",
-    description: "Flip a coin",
+    description: "Feeling lucky? Flip a coin.",
     run: async ({ client, interaction }) => {
         const channel: Discord.TextChannel = interaction.channel as Discord.TextChannel
         const coin = Math.floor(Math.random() * 2)

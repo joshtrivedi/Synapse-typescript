@@ -6,10 +6,10 @@ import { embedCreate } from '../../structures/EmbedCreate'
 
 export default new Command({
     name: "ban",
-    description: "ban users by username",
+    description: "Ban a member from this server.",
     options: [
         {
-            name: "id",
+            name: "user",
             description: `User tag to ban`,
             required: true,
             type: "USER",
@@ -27,7 +27,7 @@ export default new Command({
         }
         try {
             const reason = interaction.options.getString('reason')
-            const user = interaction.options.getUser('id')
+            const user = interaction.options.getUser('user')
             const member = interaction.guild.members.cache.get(user.id)
 
             const data = [`${user.tag}`, ` Has been Banned for ${reason}`]

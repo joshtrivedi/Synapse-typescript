@@ -174,11 +174,11 @@ export interface MyData {
 
 export default new Command({
     name: "taf",
-    description: "command to fetch TAF data for an id",
+    description: "Fetch a specific Airport TAF data.",
     options: [
         {
-            name: "id",
-            description: `Put in the ID for Taf`,
+            name: "icao",
+            description: `Enter the airport ICAO`,
             required: true,
             type: Discord.Constants.ApplicationCommandOptionTypes.STRING,
         }
@@ -186,7 +186,7 @@ export default new Command({
     run: async ({ client, interaction }) => {
 
         try {
-            const response = await axios.get(link + interaction.options.getString('id').toUpperCase() + `?options=info,translate`, { headers: { 'Authorization': `Bearer ${token}` } })
+            const response = await axios.get(link + interaction.options.getString('icao').toUpperCase() + `?options=info,translate`, { headers: { 'Authorization': `Bearer ${token}` } })
 
             if (response.status === 200) {
                 const title = await response.data
@@ -205,7 +205,7 @@ export default new Command({
                         Cloud_altitude: MappedData.forecast[0].clouds[0] ? MappedData.forecast[0].clouds[0]?.altitude + " " + MappedData.units.altitude : "No Cloud Forecast",
                         Raw: MappedData.raw
                     }
-                    const id = interaction.options.getString('id').toUpperCase();
+                    const id = interaction.options.getString('icao').toUpperCase();
                     const titleFields = [`${interaction.command.name.toUpperCase()}`, `for ICAO Code ${id}`]
                     const fieldNames = Object.keys(myData)
                     const fields = Object.values(myData)

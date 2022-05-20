@@ -6,10 +6,10 @@ import { embedCreate } from '../../structures/EmbedCreate'
 
 export default new Command({
     name: "timeout",
-    description: "command to temporarily mute members",
+    description: "Is someone being naughty? time them out for a set amount of time. ",
     options: [
         {
-            name: "id",
+            name: "user",
             description: `User tag to timeout`,
             required: true,
             type: "USER",
@@ -34,7 +34,7 @@ export default new Command({
         try {
             const value = interaction.options.getNumber('duration')
             const duration = interaction.options.getNumber('duration') * 60 * 1000 * 60 * 24
-            const user = interaction.options.getUser('id')
+            const user = interaction.options.getUser('user')
             const reason = interaction.options.getString('reason')
             const member = interaction.guild.members.cache.get(user.id)
 
