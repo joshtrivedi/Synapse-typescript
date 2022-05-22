@@ -16,7 +16,7 @@ export default new Command({
         },
         {
             name: 'duration',
-            description: `Put in the duration for the timeout (in days)`,
+            description: `Put in the duration for the timeout (in minutes)`,
             required: true,
             type: Discord.Constants.ApplicationCommandOptionTypes.NUMBER,
         },
@@ -33,7 +33,7 @@ export default new Command({
         }
         try {
             const value = interaction.options.getNumber('duration')
-            const duration = interaction.options.getNumber('duration') * 60 * 1000 * 60 * 24
+            const duration = interaction.options.getNumber('duration') * 60 * 1000;
             const user = interaction.options.getUser('user')
             const reason = interaction.options.getString('reason')
             const member = interaction.guild.members.cache.get(user.id)
