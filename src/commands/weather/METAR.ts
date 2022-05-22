@@ -260,7 +260,7 @@ export default new Command({
                     Raw: allData.raw
                 }
                 const id = interaction.options.getString('icao').toUpperCase();
-                const titleFields = [`${interaction.command.name.toUpperCase()} Data`, `for icao Code ${id}`]
+                const titleFields = [`METAR Data`, `for icao Code ${id}`]
                 const fieldNames = Object.keys(data)
                 const fields = Object.values(data)
                 const embed = await embedCreate(titleFields, fields, fieldNames)
