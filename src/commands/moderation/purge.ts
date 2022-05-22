@@ -19,7 +19,7 @@ export default new Command({
     userPermissions: ["MANAGE_MESSAGES"],
     run: (async ({ client, interaction }) => {
         if (!isAuthorModerator(interaction.member)) {
-            interaction.followUp("Author is not a moderator")
+            interaction.followUp("You do not have required permissions to use this command")
             return
         }
         const numberOfMessagesToDelete = await interaction.options.getNumber('messages')
