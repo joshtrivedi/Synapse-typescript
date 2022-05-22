@@ -38,6 +38,11 @@ export default new Command({
             const reason = interaction.options.getString('reason')
             const member = interaction.guild.members.cache.get(user.id)
 
+            let u = interaction.guild.members.cache.get(user.id)
+            if(u.permissions.has(Permissions.FLAGS.BAN_MEMBERS || Permissions.FLAGS.KICK_MEMBERS)){
+                return interaction.followUp("You cannot timeout another moderator or owner")
+            }
+
             const data = [`${user.tag}`, ` Has been Muted for ${value} days`]
             member.timeout(duration, reason)
                 .then(() => {
