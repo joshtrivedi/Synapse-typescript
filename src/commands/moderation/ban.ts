@@ -1,5 +1,5 @@
 import { Command } from '../../structures/Command'
-import Discord from 'discord.js'
+import Discord, { Permissions } from 'discord.js'
 import { isAuthorModerator } from '../../permissionsHandler'
 import { embedCreate } from '../../structures/EmbedCreate'
 
@@ -22,7 +22,8 @@ export default new Command({
         }
     ],
     run: async ({ client, interaction }) => {
-        if (!isAuthorModerator(interaction.member)) {
+        //check permission to ban members
+        if(!interaction.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) {
             return interaction.followUp("You do not have required permissions to use this command")
         }
         try {
